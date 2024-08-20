@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> 
+    <title>Sentry Web Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Birch:wght@400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1c1c1c; 
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            background: rgb(29,29,29);
+            background: linear-gradient(90deg, rgba(29,29,29,1) 0%, rgba(68,68,68,1) 100%);
+        }
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 1;
+                background-color: #FF8C00;
+            }
+            100% {
+                opacity: 1;
+            }
+            }
+
+        #subheading {
+            color: #1cb836;
+        }
+
+
+        .login-container {
+            display: none; 
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .login-container h1 {
+            color: #B22222;
+            margin-bottom: 20px;
+        }
+
+        .login-container input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: calc(100% - 22px);
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .login-container button {
+            background-color: #FF8C00;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .login-container button:hover {
+            background-color: #FF4500;
+            transform: scale(1.05);
+        }
+
+        .notification {
+            position: absolute;
+            top: 50px; 
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 15px; 
+            background-color: rgba(255, 99, 71, 0.9); 
+            color: white;
+            border-radius: 8px;
+            font-size: 1rem; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 220px; 
+            text-align: center;
+            animation: pulse 1s infinite;
+        }
+
+        .notification p {
+            margin: 0;
+            font-size: 1rem; 
+        }
+
+        .notification button {
+            background-color: #FF4500;
+            border: none;
+            color: white;
+            padding: 8px 15px; 
+            font-size: 0.875rem; 
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 8px; 
+        } 
+
+        .notification button:hover {
+            background-color: #FF8C00;
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            padding: 20px;
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            background-color: #333; 
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content h1 {
+            font-weight: 700;
+            color: #B22222;
+            margin: 10px auto;
+            font-size: 2.5rem;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; 
+            padding: 10px;
+        }
+
+        .box {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(50, 50, 93, 0.1);
+            font-size: 1rem;
+            color: #E25822;
+            text-align: center;
+            width: 150px; 
+            min-height: 50px; /* Increased height for better spacing */
+            display: flex;
+            flex-direction: column; /* Stack text and number vertically */
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            white-space: nowrap; 
+            transition: transform 0.3s;
+        }
+
+        .box p {
+            margin: 0; /* Remove default margin */
+        }
+
+        .box b {
+            display: block; /* Display number on a new line */
+            margin-top: 5px; /* Space between text and number */
+            font-size: 1.2rem; /* Larger font size for number */
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+        }
+
+        .main-content button {
+            background-color: #FF8C00;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 10px;
+        }
+
+        .main-content button:hover {
+            background-color: #FF4500;
+            transform: scale(1.05);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center; /* Optional: Center the text */
+            background-color: rgba(0, 0, 0, 0.0); /* Optional: Add background color */
+            padding: 0px; /* Optional: Add padding */
+            color: rgb(103, 103, 103);
+            }
+          .newstyle {
+              width: 100%;
+              text-align: center; /* Optional: Center the text */
+              background-color: rgba(0, 0, 0, 0.0); /* Optional: Add background color */
+              padding: 0px; /* Optional: Add padding */
+              color: rgb(103, 103, 103);
+              }
+
+        .top-logo {
+            position: absolute;
+            top: 15px; /* Adjusted to move higher up */
+            right: 7px; /* Aligns to the right */
+            text-align: center;
+        }
+
+        .top-logo img {
+            display: block;
+            margin-bottom: 5px; /* Space between logo and text */
+            width: 100px; /* Adjust the logo size as needed */
+        }
+
+        .top-logo span {
+            font-family: 'Birch', sans-serif;
+            color: black;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-10px); }
+            100% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 600px) {
+            .login-container h1, .main-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .box, .login-container input, .login-container button, .main-content button {
+                width: 90%;
+                font-size: 0.875rem;
+            }
+        }
+
+        #error-message {
+            color: #FF4500;
+            font-size: 12px;
+            margin-top: 5px;
+            }
+    </style>
+
+
+<body>
+
+    <div class="notification" id="notification">
+        <p>Please log in to monitor your alarm.</p>
+        <button onclick="showLogin()">Log In</button>
+    </div>
+
+
+
+    <div class="main-content" id="main-content">
+        <h1>My BlazeTech Alarm</h1> 
+        <div id="WebStatus" style="color:#1cb836"><b>Alarm Online</b></div>
+        
+        <div class="container">
+            <div class="box">
+                <p>Max Temp: <b id="temp">?</b></p>
+            </div>
+            <div class="box">
+                <p>CO Level: <b id="co-level">?</b></p>
+            </div>
+        </div>
+        <div class="button-container">
+            <div class="button-row">
+                <button onclick="testAlarm()">Test Alarm</button>
+                <button onclick="stopAlarm()">Stop Alarm</button>
+            </div>
+            <button id="security-button" onclick="toggleSecurityMode()">Turn On Security Mode 🔓</button>
+          <a href="http://192.168.4.1"> <button>Setup Alarm WiFi</button> </a>
+        </div>
+        
+    </div>
+    <div class="footer"> <p>Sentry Control Panel: © BlazeTech 2024</p> </div>
+
+
+    <div class="login-container" id="login-container"> 
+        <h1>Login</h1>
+
+        <div id="error-message"></div> 
+        <input type="text" id="id-input" placeholder="Enter your Alarm ID">
+        <button onclick="checkID()">Start Monitoring</button> 
+        <div class="newstyle"><p>Monitor your BlazeTech Alarm online.<br>Stay Protected, Stay Informed.</p> </div>
+
+        
+    </div>
+
+    <div class="top-logo">
+        <img src="https://lh3.googleusercontent.com/pw/AP1GczM9WO2dhXzHphpFtFVnR82golsBDD2l9dnE2BXihyJ5k-XvvExWEzwQYoyFwBTunSMKt6LB0boHdtPqerXh-NYZBNWInzFNMI4VU6A_7KFudEBc9e4=w2400" alt="logo">
+        
+    </div>
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script> 
+
+<script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyBf093m8FTKUYcyokdqG6JBUF34XvkXsVo",
+      authDomain: "blazetechalarm.firebaseapp.com",
+      databaseURL: "https://blazetechalarm-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "blazetechalarm",
+      storageBucket: "blazetechalarm.appspot.com",
+      messagingSenderId: "804467425167",
+      appId: "1:804467425167:web:b5f2fce4052e84df5bd5fa",
+      measurementId: "G-VGYEJT96PQ"
+    };
+  
+    // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  //window.database = getDatabase(app);
+</script>
+
+<script>
+
+const database = firebase.database();
+const dbRef = database.ref('Transmit/');
+
+window.onload = function() {
+    document.getElementById('main-content').style.display = 'block';
+    document.getElementById('notification').style.display = 'flex';
+    document.getElementById('login-container').style.display = 'none';
+};
+
+function changeSecurityModeVal(name) {
+    dbRef.update({
+        SecurityMode: name,
+  });
+}
+
+function testbuttonimpulse() {
+    dbRef.update({
+        test: true,
+  });
+  setTimeout(() => {
+    dbRef.update({
+        test: false,
+  });
+    }, 2000);
+}
+
+function stopbuttonimpulse() {
+    dbRef.update({
+        stop: true,
+  });
+  setTimeout(() => {
+    dbRef.update({
+        stop: false,
+  });
+    }, 2000);
+}
+
+
+function checkInternetConnection() {
+  if (navigator.onLine) {
+    document.getElementById('WebStatus').textContent = "App Online";
+  } else {
+    document.getElementById('WebStatus').textContent = "App Offline";
+  }
+}
+
+checkInternetConnection();
+setInterval(checkInternetConnection, 5000);
+
+
+let isLoggedIn = false;
+
+
+function showLogin() {
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('notification').style.display = 'none';
+    document.getElementById('login-container').style.display = 'flex';
+}
+
+function showErrorMessage(message) {
+    const errorMessageElement = document.getElementById('error-message');
+    errorMessageElement.textContent = message;
+    // Optionally, add CSS styles to the error message element for styling
+    errorMessageElement.style.color = 'red';
+    errorMessageElement.style.fontSize = '12px';
+    }
+
+function checkID() {
+    const input = document.getElementById('id-input').value;
+    if (input === 'SA1410') {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('notification').style.display = 'none';
+        isLoggedIn = true;
+        startUpdatingValues();
+    } else {
+        document.getElementById('id-input').style.animation = 'shake 0.5s';
+        showErrorMessage('Invalid ID:    ' + input);
+
+    }
+}
+
+let updateInterval;
+
+function startUpdatingValues() {
+    if (!updateInterval) {
+        updateInterval = setInterval(updateValues, 1000);
+    }
+}
+
+function stopUpdatingValues() {
+    if (updateInterval) {
+        clearInterval(updateInterval);
+        updateInterval = null;
+    }
+}
+
+
+function updateValues() {
+    if (isLoggedIn) {
+    dbRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        const tempData = data?.MaxTemp; 
+        const coData = data?.MaxCO;
+
+      document.getElementById('temp').textContent = tempData + ' °C';
+      document.getElementById('co-level').textContent = coData + ' ppm';
+    })
+    }
+}
+
+// Initial call to update values
+updateValues();
+// Update values every 5 seconds
+setInterval(updateValues, 5000);
+
+function testAlarm() {
+    if (isLoggedIn) {
+        testbuttonimpulse();
+        alert('Alarm tested!');
+    } else {
+        alert('You need to be logged in.'); 
+        
+    }
+}
+
+function stopAlarm() {
+    if (isLoggedIn) {
+        stopbuttonimpulse();
+        alert('Alarm stopped!');
+    } else {
+        alert('You need to be logged in.');
+    }
+}
+
+
+dbRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  const securityMode = data?.SecurityMode; 
+
+  if (securityMode) {
+    document.getElementById('security-button').textContent = 'Turn Off Security Mode 🔒';
+    document.getElementById('security-button').style.backgroundColor = "#FF4500";
+  } else {
+    document.getElementById('security-button').textContent = 'Turn On Security Mode 🔓';
+    document.getElementById('security-button').style.backgroundColor = "#FF8C00";
+  }
+});
+
+function toggleSecurityMode() {
+  if (isLoggedIn) {
+      const button = document.getElementById('security-button');
+
+      if (button.textContent.includes('Turn On')) {
+          button.textContent = 'Turn Off Security Mode 🔒';
+          button.style.backgroundColor = "#FF4500";
+          changeSecurityModeVal(true);
+
+      } else {
+          button.textContent = 'Turn On Security Mode 🔓';
+          button.style.backgroundColor = "#FF8C00";
+          changeSecurityModeVal(false);
+
+
+
+      }
+  } else {
+      alert('You need to be logged in.');
+  }
+}
+    </script>
+</body>
+</html>
