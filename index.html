@@ -357,22 +357,22 @@ function changeSecurityModeVal(name) {
 
 function testbuttonimpulse() {
     dbRef.update({
-        test: true,
+        test: 1,
   });
   setTimeout(() => {
     dbRef.update({
-        test: false,
+        test: 0,
   });
     }, 2000);
 }
 
 function stopbuttonimpulse() {
     dbRef.update({
-        stop: true,
+        stop: 1,
   });
   setTimeout(() => {
     dbRef.update({
-        stop: false,
+        stop: 0,
   });
     }, 2000);
 }
@@ -480,7 +480,7 @@ dbRef.on('value', (snapshot) => {
   const data = snapshot.val();
   const securityMode = data?.SecurityMode; 
 
-  if (securityMode) {
+  if (securityMode == 1) {
     document.getElementById('security-button').textContent = 'Turn Off Security Mode 🔒';
     document.getElementById('security-button').style.backgroundColor = "#FF4500";
   } else {
@@ -496,12 +496,12 @@ function toggleSecurityMode() {
       if (button.textContent.includes('Turn On')) {
           button.textContent = 'Turn Off Security Mode 🔒';
           button.style.backgroundColor = "#FF4500";
-          changeSecurityModeVal(true);
+          changeSecurityModeVal(1);
 
       } else {
           button.textContent = 'Turn On Security Mode 🔓';
           button.style.backgroundColor = "#FF8C00";
-          changeSecurityModeVal(false);
+          changeSecurityModeVal(0);
 
 
 
